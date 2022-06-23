@@ -1,5 +1,6 @@
 #pragma once
 #include "GameTimer.h"
+#include "../Gameobject/RenderSystem.h"
 
 class WinApp
 {
@@ -8,19 +9,49 @@ public:
 
 	HINSTANCE AppInst()const;
 	HWND MainWnd()const;
+	float GetDeltaTime() const;
+	HDC hBuffDC;
+	HBITMAP hBuffBitmap;
+	BITMAPINFO bitmapinfo;
 
-	virtual bool Init();
-	virtual void UpdateScene(float dt);
-	virtual void DrawScene();
-	virtual LRESULT MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	bool Init();
+	void UpdateScene(float deltaTime);
+	void DrawScene();
+	LRESULT MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	
 
 	// 处理鼠标输入事件的便捷重载函数
-	virtual void OnMouseDown(WPARAM btnState, int x, int y) { }
-	virtual void OnMouseUp(WPARAM btnState, int x, int y) { }
-	virtual void OnMouseMove(WPARAM btnState, int x, int y) { }
+	void OnMouseDown(WPARAM btnState, int x, int y) 
+	{ 
+		switch (btnState)
+		{
+		case MK_LBUTTON:
+			renderSys.LBtnDownEvent(x, y);
+			break;
+		case MK_RBUTTON:
+			renderSys.RBtnDownEvent(x, y);
+			break;
+		}
+	}
+	void OnMouseUp(WPARAM btnState, int x, int y) { }
+	void OnMouseMove(WPARAM btnState, int x, int y) 
+	{ 
+		switch (btnState)
+		{
+		case MK_LBUTTON:
+			renderSys.BtnMoveEvent(x, y);
+			break;
+		case MK_RBUTTON:
+			break;
+		}
+	}
+
 
 protected:
 	bool InitMainWindow();
+	void SwapBuff(HDC hdc);
+	void SetBitmapInfo();
+	void AntiAliasing(BYTE* src, BYTE* dest, int width, int height);
 
 protected:
 	HINSTANCE mhAppInst;// 应用程序实例句柄
@@ -35,5 +66,7 @@ protected:
 	// 窗口的初始大小。D3DApp 默认为 800x600。注意，当窗口大小在运行阶段改变时，这些值也会随之改变。
 	int mClientWidth;
 	int mClientHeight;
+	
+	RenderSystem renderSys;
 };
 

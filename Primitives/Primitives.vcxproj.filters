@@ -21,12 +21,45 @@
     <ClCompile Include="Color_RGBA.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Triangle.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Sampler2D.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vertex.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Color_RGBA.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Triangle.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SoftShader_NoLightAndNoShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderReference.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Sampler2D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

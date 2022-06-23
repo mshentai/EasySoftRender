@@ -1,5 +1,6 @@
 #include "WinApp.h"
 
+
 WinApp *gApp = nullptr;
 
 LRESULT CALLBACK MainWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -11,11 +12,12 @@ WinApp::WinApp(HINSTANCE hInstance) :
 	mhAppInst(hInstance),
 	mMainWndCaption("Easy Appliation"),
 	mClientWidth(800),
-	mClientHeight(600),
+	mClientHeight(800),
 	mhMainWnd(NULL),
 	mAppPaused(false)
 {
 	gApp = this;
+	mTimer.Reset();
 }
 
 HINSTANCE WinApp::AppInst() const
@@ -28,17 +30,46 @@ HWND WinApp::MainWnd() const
 	return this->mhMainWnd;
 }
 
+float WinApp::GetDeltaTime() const
+{
+	return mTimer.GetDeltaTime();
+}
+
 bool WinApp::Init()
 {
-	return this->InitMainWindow();
+	ZeroMemory(&bitmapinfo, sizeof(BITMAPINFO));
+	SetBitmapInfo();
+	HDC screen_hdc = GetDC(mhMainWnd);
+	hBuffDC = CreateCompatibleDC(screen_hdc);
+	hBuffBitmap = CreateCompatibleBitmap(screen_hdc, mClientWidth/* * 4*/, mClientHeight/* * 4*/);
+	HBITMAP o = static_cast<HBITMAP>(SelectObject(hBuffDC, hBuffBitmap));
+	DeleteObject(o);
+	renderSys.SetClientRect(mClientWidth/* * 4*/, mClientHeight/* * 4*/);
+	bool res = renderSys.OnInitialize() && this->InitMainWindow();
+	mTimer.Start();
+	return res;
 }
 
 void WinApp::UpdateScene(float dt)
 {
+	mTimer.Tick();
+	//char s[20];
+	//sprintf_s(s, "%f\n", dt);
+	//OutputDebugString(s);
 }
 
 void WinApp::DrawScene()
 {
+	if (renderSys.IsDirty())
+	{
+		renderSys.OnIdle();
+		BYTE* bufferPtr = renderSys.GetBuffer();
+		SetDIBits(hBuffDC, hBuffBitmap, 0, mClientHeight/* * 4*/, bufferPtr, &bitmapinfo, DIB_RGB_COLORS);
+		RECT rect;
+		GetClientRect(mhMainWnd, &rect);
+		InvalidateRect(mhMainWnd, &rect, true);
+		UpdateWindow(mhMainWnd);
+	}
 }
 
 LRESULT WinApp::MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -72,7 +103,20 @@ LRESULT WinApp::MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		OnMouseUp(wParam, LOWORD(lParam), HIWORD(lParam));
 		return 0;
 	case WM_MOUSEMOVE:
-		OnMouseMove(wParam, LOWORD(lParam), HIWORD(lParam));
+		//OnMouseMove(wParam, LOWORD(lParam), HIWORD(lParam));
+		return 0;
+	case WM_PAINT:
+	{
+		PAINTSTRUCT ps;
+		HDC hdc = BeginPaint(hWnd, &ps);
+		if (renderSys.IsActive())
+		{
+			SwapBuff(hdc);
+		}
+		EndPaint(hWnd, &ps);
+		return 0;
+	}
+	case WM_ERASEBKGND:
 		return 0;
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
@@ -115,4 +159,33 @@ bool WinApp::InitMainWindow()
 	//更新窗口
 	UpdateWindow(mhMainWnd);
 	return true;
+}
+
+void WinApp::SwapBuff(HDC hdc)
+{
+	BitBlt(hdc, 0, 0, mClientWidth, mClientHeight, hBuffDC, 0, 0, SRCCOPY);
+	//StretchBlt(hdc, 0, 0, mClientWidth, mClientHeight, hBuffDC, 0, 0, mClientWidth * 4, mClientHeight * 4, SRCCOPY);
+}
+
+void WinApp::SetBitmapInfo()
+{
+	bitmapinfo.bmiHeader.biBitCount = 24;      //每个像素多少位，也可直接写24(RGB)或者32(RGBA)
+	bitmapinfo.bmiHeader.biCompression = BI_RGB;
+	bitmapinfo.bmiHeader.biHeight = mClientHeight/* * 4*/;
+	bitmapinfo.bmiHeader.biPlanes = 1;
+	bitmapinfo.bmiHeader.biSizeImage = 0;
+	bitmapinfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	bitmapinfo.bmiHeader.biWidth = mClientWidth/* * 4*/;
+}
+
+void WinApp::AntiAliasing(BYTE* src, BYTE* dest, int width, int height)
+{
+	int halfWidth = width >> 1;
+	int halfHeight = height >> 1;
+	for (int r = 0; r < height; r += 2)
+	{
+		for (int c = 0; c < width; c += 2)
+		{
+		}
+	}
 }
