@@ -2,6 +2,7 @@
 #include "CppUnitTest.h"
 #include "../Transfrom/Float4x4.h"
 #include "../Transfrom/Vector3.h"
+#include "../Transfrom/Transform.h"
 #pragma comment(lib,"../Debug/Transfrom.lib")
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -15,16 +16,16 @@ namespace UnitTest
 		{
 			Vector3 v3(1, 2, 3);
 			Float4x4 mat4;
-			for (size_t i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++)
 			{
 				mat4.SetValue(i, i, 1.0f);
 			}
 			Assert::IsTrue(v3 == (v3 * mat4));
-			for (size_t i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++)
 			{
 				mat4.SetValue(i, i, 0.5f);
 			}
-			for (size_t i = 0; i < 4; i++)
+			for (int i = 0; i < 4; i++)
 			{
 				mat4.SetValue(3, i, 1.0f);
 			}
@@ -110,5 +111,37 @@ namespace UnitTest
 			Assert::IsTrue(fmat2 == result);
 		}
 
+		TEST_METHOD(Test_VecMul)
+		{
+			Vector3 l(1.0f, 2.0f, 3.0f);
+			Vector3 r(10.0f, 250.5f, 3.1f);
+			Assert::IsTrue(l*r == 10.0f+501.0f+9.3f);
+		}
+
+		TEST_METHOD(Test_TransformRot)
+		{
+			Vector3 rot(30.0f, 90.0f, 60.0f);
+			Vector3 vec(1.0f, 2.0f, 50.0f);
+			Transform tran(vec, rot);
+			float mat[4][4] {
+				{0.4330f,0.75f,-0.5f,0},
+				{0.25f,0.433f,0.866f,0},
+				{0.866f,-0.5f,0,0},
+				{1.0f, 2.0f, 50.0f,1}
+			};
+			Float4x4 WTO(mat);
+			Assert::IsTrue(WTO == tran.WorldToObject());
+			Assert::IsTrue(WTO.Inverse() == tran.ObjectToWorld());
+			Vector3 rot2(60.0f, 0.0f, 0.0f);
+			Vector3 vec2(10.0f, 10.0f, 10.0f);
+			tran.Move(vec2);
+			tran.Rotate(rot2);
+			WTO.AddValue(3, 0, vec2[0]);
+			WTO.AddValue(3, 1, vec2[1]);
+			WTO.AddValue(3, 2, vec2[2]);
+			WTO *= Float4x4::GetXRotationMatrix(60);
+			Assert::IsTrue(WTO == tran.WorldToObject());
+			Assert::IsTrue(WTO.Inverse() == tran.ObjectToWorld());
+		}
 	};
 }

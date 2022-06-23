@@ -36,4 +36,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\0.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="..\1.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

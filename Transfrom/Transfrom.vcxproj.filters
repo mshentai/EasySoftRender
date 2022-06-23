@@ -24,7 +24,13 @@
     <ClInclude Include="Reference.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Transform.h">
+    <ClInclude Include="Float3x3.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Quaternion.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector4.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -35,7 +41,13 @@
     <ClCompile Include="Float4x4.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Transform.cpp">
+    <ClCompile Include="Float3x3.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Quaternion.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector4.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

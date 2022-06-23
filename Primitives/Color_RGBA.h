@@ -10,5 +10,10 @@ public:
 	void SetRGB(byte r, byte g, byte b);
 	void SetA(byte a);
 	byte& operator[](int i);
+	const byte * ToArray() const
+	{
+		return rgba;
+	}
+	
 };
 
