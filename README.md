@@ -25,10 +25,11 @@
 ![Main](https://user-images.githubusercontent.com/72799938/180641952-20f74311-4f9f-447e-9634-390b25cfc700.png)
 
 # 待实现目标
-1、透明度和混合操作
+ 1、透明度和混合操作
 
-2、阴影贴图（Shadow Map）的阴影效果+VSSM软阴影。
+ 2、阴影贴图（Shadow Map）的阴影效果+VSSM软阴影。
  
+ 3、实现多线程渲染。
  
 
 
